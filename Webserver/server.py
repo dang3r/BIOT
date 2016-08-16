@@ -1,7 +1,11 @@
 #!/usr/bin/python
+#
+# How to use:
+# python server.py [db_file_path]
 
 from flask import Flask, send_from_directory, request, jsonify
 import sqlite3
+import sys, getopt
 
 # Create the Webserver application
 # By default, Flask will serve static files from the 'static' folder
@@ -9,6 +13,9 @@ import sqlite3
 app = Flask(__name__)
 
 # Database connection
+db_name = 'BIOT_Base.db'
+if len(sys.argv) >= 2:
+    db_name = sys.argv[1]
 conn = sqlite3.connect('BIOT_Base.db')
 
 # This creates an HTTP route on the server
@@ -16,6 +23,10 @@ conn = sqlite3.connect('BIOT_Base.db')
 @app.route('/static/<path>')
 def static_assets(path):
     return send_from_directory('static', path)
+
+# HTTP-API Routes
+# These routes execute a query on the database and return the data
+# as JSON
 
 @app.route('/nodes', methods=['GET'])
 def get_nodes():
